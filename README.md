@@ -1,0 +1,2 @@
+# Internal Folder
+buffer lives in the internal folder to limit it's scope to only the client and server which live under the same folder tree. There is no need for this to be in a "pkg" or "buffer" folder since none external will need to make use of this 
