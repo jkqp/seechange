@@ -1,0 +1,49 @@
+// Messages shared by the buffer server and client.
+syntax = "proto3";
+
+package buffer;
+
+option go_package = "github.com/jkqp/seechange/internal/pb";
+
+// Request is what the client sends. Exactly one operation is set.
+message Request {
+  oneof op {
+    PushRequest push = 1;
+    PullRequest pull = 2;
+    SizeRequest size = 3;
+  }
+}
+
+message PushRequest {
+  string value = 1;
+}
+
+message PullRequest {}
+
+message SizeRequest {}
+
+message Response {
+  oneof result {
+    PushResponse push = 1;
+    PullResponse pull = 2;
+    SizeResponse size = 3;
+    ErrorResponse err = 4;
+  }
+}
+
+message PushResponse {
+  bool ok = 1;
+}
+
+message PullResponse {
+  string value = 1;
+  bool ok = 2;
+}
+
+message SizeResponse {
+  int32 size = 1;
+}
+
+message ErrorResponse {
+  string message = 1;
+}

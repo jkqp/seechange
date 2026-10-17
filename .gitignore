@@ -20,3 +20,8 @@ vendor/
 
 # Environment files
 .env
+
+# Personal notes and brief, not for submission
+Notes.md
+primarySource.md
+InterviewQuestions.md

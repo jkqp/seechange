@@ -1,0 +1,20 @@
+services:
+  server:
+    build:
+      context: .
+      args:
+        APP: server
+    ports:
+      # Published so a client run with `go run` on the host can reach it too.
+      - "5555:5555"
+
+  client:
+    build:
+      context: .
+      args:
+        APP: client
+    environment:
+      # Compose gives each service a hostname matching its name.
+      SERVER_ADDR: tcp://server:5555
+    depends_on:
+      - server

@@ -1,6 +1,8 @@
 package buffer
 
 import (
+	"fmt"
+	"sync"
 	"testing"
 )
 
@@ -123,5 +125,40 @@ func TestSize(t *testing.T) {
 				t.Errorf("Size() = %d, want %d", got, tc.want)
 			}
 		})
+	}
+}
+
+func TestConcurrentPush(t *testing.T) {
+	goroutines := 10
+	perGoroutine := 100
+	total := goroutines * perGoroutine
+	seen := map[string]bool{}
+	b := New(total)
+	var wg sync.WaitGroup
+
+	for g := range goroutines {
+		wg.Go(func() {
+			for i := range perGoroutine {
+				b.Push(fmt.Sprintf("g%d-%d", g, i))
+			}
+		})
+	}
+
+	wg.Wait()
+	got := b.Size()
+	if got != total {
+		t.Errorf("Size() = %d, want %d", got, total)
+	}
+
+	for range b.Size() {
+		s, _ := b.Pull()
+		if seen[s] {
+			t.Errorf("duplicate item %q", s)
+		}
+		seen[s] = true
+	}
+
+	if n := len(seen); n != total {
+		t.Errorf("got %d unique items, want %d", n, total)
 	}
 }
